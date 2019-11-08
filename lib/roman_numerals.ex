@@ -18,4 +18,70 @@ defmodule RomanNumerals do
       number == 0 -> ""
     end
   end
+
+  def arabic(numeral) when is_binary(numeral) do
+    if numeral == "" do
+      0
+    else
+      codepoints = String.codepoints(numeral)
+      [hd | rest] = codepoints
+
+      case hd do
+        "M" ->
+          arabic(codepoints)
+
+        "D" ->
+          arabic(codepoints)
+
+        "C" ->
+          if List.first(rest) == "M" || List.first(rest) == "D" do
+            arabic([hd <> hd(rest) | tl(rest)])
+          else
+            arabic(codepoints)
+          end
+
+        "L" ->
+          arabic(codepoints)
+
+        "X" ->
+          if List.first(rest) == "C" || List.first(rest) == "L" do
+            arabic([hd <> hd(rest) | tl(rest)])
+          else
+            arabic(codepoints)
+          end
+
+        "V" ->
+          arabic(codepoints)
+
+        "I" ->
+          if List.first(rest) == "V" || List.first(rest) == "X" do
+            arabic([hd <> hd(rest) | tl(rest)])
+          else
+            arabic(codepoints)
+          end
+      end
+    end
+  end
+
+  def arabic([hd | tl]) do
+    cond do
+      hd == "M" -> 1000 + arabic(Enum.join(tl))
+      hd == "CM" -> 900 + arabic(Enum.join(tl))
+      hd == "D" -> 500 + arabic(Enum.join(tl))
+      hd == "CD" -> 400 + arabic(Enum.join(tl))
+      hd == "C" -> 100 + arabic(Enum.join(tl))
+      hd == "XC" -> 90 + arabic(Enum.join(tl))
+      hd == "L" -> 50 + arabic(Enum.join(tl))
+      hd == "XL" -> 40 + arabic(Enum.join(tl))
+      hd == "X" -> 10 + arabic(Enum.join(tl))
+      hd == "IX" -> 9
+      hd == "V" -> 5 + arabic(Enum.join(tl))
+      hd == "IV" -> 4
+      hd == "I" -> 1 + arabic(Enum.join(tl))
+    end
+  end
+
+  def arabic([]) do
+    0
+  end
 end
