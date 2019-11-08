@@ -153,4 +153,8 @@ defmodule RomanNumeralsTest do
   test "arabic returns 3000 for MMM" do
     assert RomanNumerals.arabic("MMM") == 3000
   end
+
+  test "arabic is reverse of numeral" do
+    Enum.all?(1..3000, fn x -> x == RomanNumerals.arabic(RomanNumerals.numeral(x)) end)
+  end
 end
